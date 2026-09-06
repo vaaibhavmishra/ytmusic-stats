@@ -15,25 +15,32 @@ A comprehensive web application that analyzes your YouTube Music listening histo
 - **🌙 Dark/Light Mode**: Seamless theme switching
 - **📱 Mobile Responsive**: Optimized for all devices
 - **🔐 Secure Authentication**: Email/password and Google OAuth integration
-- **☁️ Cloud Storage**: Secure data storage with MongoDB
+- **☁️ Cloud Storage**: Only your *computed* stats are stored — see Privacy below
 - **📂 File Upload**: Easy Google Takeout data import
+
+## 🔒 Privacy
+
+Your `watch-history.json` is parsed and aggregated **entirely in your browser** — across
+multiple CPU cores via Web Workers for large files. Only the small computed summary
+(top artists, top songs, totals) is sent to the server. The raw history file never leaves
+your machine.
 
 ## 🛠️ Tech Stack
 
 ### Frontend
 
-- **Next.js 16**: React 19 framework with App Router
+- **Next.js 16**: React 19 framework with App Router (React Compiler enabled)
 - **TypeScript**: Type-safe development
 - **Tailwind CSS v4**: Utility-first CSS framework
 - **Shadcn UI**: Beautiful UI components
 - **Motion (Framer Motion)**: Smooth animations and transitions
-- **Recharts**: Interactive charts and visualizations
 - **React Three Fiber**: 3D graphics and visual effects
+- **Web Workers**: Multi-core, client-side parsing of large history files
 
 ### Backend
 
-- **MongoDB**: NoSQL database
-- **Mongoose**: MongoDB object modeling
+- **PostgreSQL**: Relational database
+- **Drizzle ORM**: Type-safe schema and migrations
 - **Better Auth**: Modern authentication system
 
 ### Development
@@ -48,7 +55,7 @@ A comprehensive web application that analyzes your YouTube Music listening histo
 
 - Node.js 18+
 - pnpm (recommended) or npm
-- MongoDB instance (local or cloud)
+- A PostgreSQL database (local, Docker, or hosted)
 - Google OAuth credentials (optional)
 
 ### Installation
@@ -68,34 +75,23 @@ A comprehensive web application that analyzes your YouTube Music listening histo
 
 3. **Set up environment variables**
 
-   Create a `.env.local` file in the root directory:
+   ```bash
+   cp .env.example .env
+   ```
+   
+4. **Apply database migrations**
 
-   ```env
-   # Production DB
-   DATABASE_URL=
-
-   # Better Auth Configuration
-   BETTER_AUTH_SECRET=
-   BETTER_AUTH_URL=
-
-
-   # Google OAuth (for BetterAuth)
-   GOOGLE_CLIENT_ID=
-   GOOGLE_CLIENT_SECRET=
-
-   # YouTube API (for song duration lookup)
-   YOUTUBE_API_KEY=
-
-   NEXT_PUBLIC_APP_URL=
+   ```bash
+   pnpm db:migrate
    ```
 
-4. **Start the development server**
+5. **Start the development server**
 
    ```bash
    pnpm dev
    ```
 
-5. **Open your browser**
+6. **Open your browser**
 
    Navigate to [http://localhost:3000](http://localhost:3000)
 
@@ -166,11 +162,11 @@ Navigate using arrow keys, click, or let it autoplay!
 
 ## 🗄️ Database Schema
 
-The application uses MongoDB with the following main collections:
+The application uses PostgreSQL (via Drizzle ORM) with the following main tables:
 
-- **Users**: User account information (managed by Better Auth)
-- **Songs**: Song metadata (title, artist, duration, thumbnail, release date)
-- **UserStats**: Aggregated user statistics including:
+- **user / session / account / verification**: Auth data (managed by Better Auth)
+- **songs**: Song metadata cache keyed by YouTube ID (title, artist, duration, thumbnail, release date)
+- **user_stats**: One aggregated row per user, including:
   - Total songs, artists, and playtime
   - Top songs and artists with play counts
   - Music era analysis and decade distribution
@@ -218,27 +214,15 @@ Google Takeout files are processed client-side with:
 - Decade distribution charts
 - Music era insights
 
-## 🚀 Deployment
 
-### Vercel (Recommended)
+### Running without Docker
 
-1. Connect your GitHub repository to Vercel
-2. Set up environment variables in Vercel dashboard
-3. Deploy automatically on push to main branch
-
-### Manual Deployment
-
-1. Build the application:
-
-   ```bash
-   pnpm build
-   ```
-
-2. Start the production server:
-
-   ```bash
-   pnpm start
-   ```
+```bash
+pnpm install
+pnpm db:migrate
+pnpm build
+pnpm start
+```
 
 ## 🤝 Contributing
 
@@ -269,7 +253,8 @@ We welcome contributions! Please follow these steps:
 
 **Authentication Issues**
 
-- Verify MongoDB connection string
+- Verify the `DATABASE_URL` PostgreSQL connection string
+- Confirm migrations have been applied (`pnpm db:migrate`)
 - Check Better Auth configuration
 - Ensure environment variables are set correctly
 

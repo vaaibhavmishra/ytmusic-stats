@@ -1,9 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
-import { Analytics } from "@vercel/analytics/next";
-import { SpeedInsights } from "@vercel/speed-insights/next";
-import { DevBanner } from "@/components/DevBanner";
 import { Navigation } from "@/components/Navigation";
 import Providers from "@/components/providers";
 
@@ -19,6 +17,9 @@ const geistMono = Geist_Mono({
 
 const siteUrl =
   process.env.NEXT_PUBLIC_APP_URL || "https://ytmusicstats.shipby.me";
+
+const umamiWebsiteId = process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID;
+const umamiUrl = process.env.NEXT_PUBLIC_UMAMI_URL;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -141,7 +142,6 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
         <Providers>
-          <DevBanner />
           <div className="min-h-screen bg-black relative w-full">
             {/* Header - Floating above content */}
             <div className="absolute top-0 left-0 right-0 z-50 pointer-events-none">
@@ -150,13 +150,12 @@ export default function RootLayout({
               </div>
             </div>
             {/* Main Content - Full screen with beam background */}
-            <main className="relative z-10 min-h-screen">
-              {children}
-              <Analytics />
-              <SpeedInsights />
-            </main>
+            <main className="relative z-10 min-h-screen">{children}</main>
           </div>
         </Providers>
+        {umamiWebsiteId && (
+          <Script src={umamiUrl} data-website-id={umamiWebsiteId} />
+        )}
       </body>
     </html>
   );
