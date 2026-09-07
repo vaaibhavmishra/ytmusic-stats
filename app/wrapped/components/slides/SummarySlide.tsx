@@ -6,6 +6,7 @@ import {
   Clock,
   Crown,
   Download,
+  Heart,
   Music,
   Share2,
   Sparkles,
@@ -13,6 +14,7 @@ import {
 import { motion } from "motion/react";
 import Image from "next/image";
 import { useRef, useState } from "react";
+import { DonationModal } from "@/components/DonationModal";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import type { IUserStats } from "@/lib/types/database";
@@ -26,6 +28,7 @@ export function SummarySlide({ stats, userName }: SummarySlideProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const cardContainerRef = useRef<HTMLDivElement>(null);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isDonationOpen, setIsDonationOpen] = useState(false);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!cardContainerRef.current) return;
@@ -455,7 +458,20 @@ export function SummarySlide({ stats, userName }: SummarySlideProps) {
           <Share2 className="h-4 w-4" />
           Share
         </Button>
+        <Button
+          onClick={() => setIsDonationOpen(true)}
+          variant="outline"
+          className="gap-2 bg-white/5 border-rose-500/30 text-rose-300 hover:bg-rose-500/10 hover:text-rose-200"
+        >
+          <Heart className="h-4 w-4 fill-rose-500 text-rose-500" />
+          Support
+        </Button>
       </motion.div>
+
+      <DonationModal
+        isOpen={isDonationOpen}
+        onClose={() => setIsDonationOpen(false)}
+      />
     </div>
   );
 }

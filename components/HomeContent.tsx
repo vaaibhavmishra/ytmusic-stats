@@ -16,6 +16,8 @@ import { motion, type Variants } from "motion/react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import Script from "next/script";
+import { useState } from "react";
+import { DonationModal } from "@/components/DonationModal";
 import { Button } from "@/components/ui/button";
 
 const Beams = dynamic(() => import("@/components/Beams"), { ssr: false });
@@ -67,6 +69,7 @@ const heroVariants: Variants = {
 };
 
 export function HomeContent() {
+  const [isDonationOpen, setIsDonationOpen] = useState(false);
   const faqJsonLd = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -630,6 +633,17 @@ export function HomeContent() {
                   Vaibhav Mishra
                 </Link>
               </div>
+              <div className="mt-4">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setIsDonationOpen(true)}
+                  className="h-8 gap-1.5 border-rose-500/30 text-xs text-rose-400 hover:bg-rose-500/10 hover:text-rose-300"
+                >
+                  <Heart className="h-3.5 w-3.5 fill-rose-500 text-rose-500" />
+                  Support this project
+                </Button>
+              </div>
             </div>
 
             {/* Quick Links */}
@@ -696,6 +710,16 @@ export function HomeContent() {
                     Source Code
                   </Link>
                 </li>
+                <li>
+                  <button
+                    type="button"
+                    onClick={() => setIsDonationOpen(true)}
+                    className="text-muted-foreground hover:text-rose-400 transition-colors flex items-center cursor-pointer"
+                  >
+                    <Heart className="h-3 w-3 mr-1 text-rose-500 fill-rose-500/60" />
+                    Donate & Sponsor
+                  </button>
+                </li>
               </ul>
             </div>
           </div>
@@ -740,6 +764,11 @@ export function HomeContent() {
           </div>
         </div>
       </footer>
+
+      <DonationModal
+        isOpen={isDonationOpen}
+        onClose={() => setIsDonationOpen(false)}
+      />
     </motion.div>
   );
 }

@@ -5,6 +5,7 @@ import {
   Calendar,
   Clock,
   Gift,
+  Heart,
   Music,
   Sparkles,
   TrendingUp,
@@ -12,6 +13,8 @@ import {
 } from "lucide-react";
 import { motion, type Variants } from "motion/react";
 import Link from "next/link";
+import { useState } from "react";
+import { DonationModal } from "@/components/DonationModal";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -56,6 +59,7 @@ interface DashboardContentProps {
 }
 
 export function DashboardContent({ stats }: DashboardContentProps) {
+  const [isDonationOpen, setIsDonationOpen] = useState(false);
   // If no stats, show welcome screen with upload link
   if (!stats) {
     return (
@@ -334,6 +338,44 @@ export function DashboardContent({ stats }: DashboardContentProps) {
           </TabsContent>
         </Tabs>
       </motion.div>
+
+      {/* Support / Sponsor Card */}
+      <motion.div variants={itemVariants} className="pt-2">
+        <Card className="border-rose-500/20 bg-gradient-to-r from-rose-500/5 via-background to-purple-500/5">
+          <CardContent className="flex flex-col sm:flex-row items-center justify-between gap-4 p-6">
+            <div className="flex items-center gap-4 text-center sm:text-left">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-rose-500/10 text-rose-500">
+                <Heart className="h-6 w-6 fill-rose-500" />
+              </div>
+              <div>
+                <h3 className="text-base font-semibold">
+                  Enjoying your YTMusic Stats?
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  Support the project via Dodo Payments (UPI, Cards, Apple Pay)
+                  or GitHub Sponsors to help cover server costs and keep it
+                  ad-free.
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3 shrink-0">
+              <Button
+                variant="outline"
+                className="gap-2 border-rose-500/30 text-rose-400 hover:bg-rose-500/10 hover:text-rose-300 cursor-pointer"
+                onClick={() => setIsDonationOpen(true)}
+              >
+                <Heart className="h-4 w-4 fill-rose-500" />
+                Support Project
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
+
+      <DonationModal
+        isOpen={isDonationOpen}
+        onClose={() => setIsDonationOpen(false)}
+      />
     </motion.div>
   );
 }
