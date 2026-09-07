@@ -270,6 +270,13 @@ We welcome contributions! Please follow these steps:
 - Create a new issue with detailed information
 - Include error messages and steps to reproduce
 
+## 💖 Support / Donate
+
+If you find YTMusic Stats helpful and want to support server costs and active development:
+
+- **Dodo Payments**: [Donate via Dodo Payments](https://checkout.dodopayments.com) (Supports UPI in India, Apple Pay, Google Pay, and Cards globally).
+- **GitHub Sponsors**: [Sponsor on GitHub](https://github.com/sponsors/vaaibhavmishra) (0% platform fees).
+
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
